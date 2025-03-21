@@ -15,6 +15,7 @@ public:
 	CString m_Logon;
 	CString m_Password;
 	int m_Sound;
+	int m_Auto;
 
 // Dialog Data
 	enum { IDD = IDD_DIALOG2 };
