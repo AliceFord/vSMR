@@ -41,7 +41,7 @@ bool mouseWithin(CRect rect) {
 
 // ReSharper disable CppMsExtAddressOfClassRValue
 
-CSMRRadar::CSMRRadar()
+CSMRRadar::CSMRRadar(CPlugIn *plugin)
 {
 
 	Logger::info("CSMRRadar::CSMRRadar()");
@@ -120,7 +120,8 @@ CSMRRadar::CSMRRadar()
 
 	Logger::info("Loading WIP areas");
 	string raw;
-	string url = "https://raw.githubusercontent.com/VATSIM-UK/uk-controller-pack/refs/heads/main/.data/vSMR_WIP_areas.txt";
+	const char *altUrl = plugin->GetDataFromSettings("smr_areas_url");
+	string url = altUrl ? altUrl : "https://ukcp.vatsim.uk/api/smr-areas";
 	HttpHelper* httpHelper = new HttpHelper();
 	raw.assign(httpHelper->downloadStringFromURL(url));
 
@@ -130,8 +131,11 @@ CSMRRadar::CSMRRadar()
 	while (getline(ss, line, '\n')) {
 		if (startsWith("COORD:", line.c_str())) {
 			CPosition pos;
-			pos.LoadFromStrings(line.substr(21, 14).c_str(), line.substr(6, 14).c_str());
-			wipArea.push_back(pos);
+			if (
+				line.size() >= 21 &&
+				pos.LoadFromStrings(line.substr(21, 14).c_str(), line.substr(6, 14).c_str())
+			)
+				wipArea.push_back(pos);
 		}
 		else {
 			if (wipArea.size() > 0) {
