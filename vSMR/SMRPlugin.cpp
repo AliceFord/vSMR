@@ -209,7 +209,8 @@ if (DatalinkToSend.sid == "CHK" && DatalinkToSend.rwy == "09R") // CPT 09R
 		url += DatalinkToSend.destination;
 		url += "@ OFF RWY @";
 		url += DatalinkToSend.rwy;
-		url += "@ VIA CPT AFTER DEP AFTER DEP CLIMB STRAIGHT AHEAD - AT LON DME 2.0 TURN RIGHT HDG 220 - CLIMB 6000 FT SQUAWK @";
+		url += "@ VIA CPT AFTER DEP CLIMB STRAIGHT AHEAD - AT LON DME 2.0 TURN RIGHT HDG 220 - CLIMB 6000 FT SQUAWK @";
+
 		url += DatalinkToSend.squawk;
 		url += "@ NEXT FREQ @";
 		if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
