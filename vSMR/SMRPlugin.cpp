@@ -209,63 +209,48 @@ if (DatalinkToSend.sid == "CHK" && DatalinkToSend.rwy == "09R") // CPT 09R
 		url += DatalinkToSend.destination;
 		url += "@ OFF RWY @";
 		url += DatalinkToSend.rwy;
-		url += "@ VIA CPT SQUAWK @";
+		url += "@ VIA CPT AFTER DEP AFTER DEP CLIMB STRAIGHT AHEAD - AT LON DME 2.0 TURN RIGHT HDG 220 - CLIMB 6000 FT SQUAWK @";
 		url += DatalinkToSend.squawk;
-		url += "@. AFTER DEP AFTER DEP CLIMB STRAIGHT AHEAD - AT LON DME 2.0 TURN RIGHT HDG 220 - CLIMB 6000 FT. NEXT FREQ. ";
+		url += "@ NEXT FREQ @";
+		if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
+		{url += DatalinkToSend.freq;}
+		else 
+		{url += myfrequency;}
 		if (DatalinkToSend.ctot != "no" && DatalinkToSend.ctot.size() > 3)
 		{
-			url += "CTOT @";
+			url += "@ CTOT @";
 			url += DatalinkToSend.ctot;
-			url += "@ .";
+			url += "@ ";
+		}else{
+			url += "@ NO CTOT";
 		}
-		if (DatalinkToSend.asat != "no" && DatalinkToSend.asat.size() > 3)
-		{
-			url += "TSAT @";
-			url += DatalinkToSend.asat;
-			url += "@ .";
-		}
-		url += "REPORT ACFT TYPE AND STAND NUMBER ON @";
-		url += myfrequency;
-		url += "@ WHEN READY FOR PUSHBACK. IF UNABLE REVERT TO VOICE.";
+	
 	}
-	else
+	else // normal PDC message (UK Format)
 	{
-		url += "CLR TO @";
+		url += "@";
+		url += DatalinkToSend.callsign;
+		url += "@ CLRD TO @";
 		url += DatalinkToSend.destination;
-		url += "@ RWY @";
+		url += "@ OFF @";
 		url += DatalinkToSend.rwy;
-		url += "@ DEP @";
+		url += "@ VIA @";
 		url += DatalinkToSend.sid;
-		url += "@ INIT CLB @";
-		url += DatalinkToSend.climb;
 		url += "@ SQUAWK @";
 		url += DatalinkToSend.squawk;
-		url += "@ ";
+		url += "@ NEXT FREQ @";
+		if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
+		{url += DatalinkToSend.freq;}
+		else 
+		{url += myfrequency;}
 		if (DatalinkToSend.ctot != "no" && DatalinkToSend.ctot.size() > 3)
 		{
 			url += "CTOT @";
 			url += DatalinkToSend.ctot;
 			url += "@ ";
+		}else{
+			url += "NO CTOT";
 		}
-		if (DatalinkToSend.asat != "no" && DatalinkToSend.asat.size() > 3)
-		{
-			url += "TSAT @";
-			url += DatalinkToSend.asat;
-			url += "@ ";
-		}
-		if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
-		{
-			url += "WHEN RDY CALL FREQ @";
-			url += DatalinkToSend.freq;
-			url += "@";
-		}
-		else
-		{
-			url += "WHEN RDY CALL @";
-			url += myfrequency;
-			url += "@";
-		}
-		url += " IF UNABLE CALL VOICE. ";
 	}
 	if (DatalinkToSend.message != "no" && DatalinkToSend.message.size() > 1)
 		url += DatalinkToSend.message;
