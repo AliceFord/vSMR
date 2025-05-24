@@ -205,27 +205,14 @@ void sendDatalinkClearance(void * arg) {
 	url += "//R/";
 if (DatalinkToSend.sid == "CHK" && DatalinkToSend.rwy == "09R") // CPT 09R
 	{
-		url += "CLR TO @";
+		url += "@";
+		url += DatalinkToSend.callsign;
+		url += "@ CLRD TO @";
 		url += DatalinkToSend.destination;
 		url += "@ OFF RWY @";
 		url += DatalinkToSend.rwy;
-		url += "@ VIA CPT AFTER DEP CLIMB STRAIGHT AHEAD - AT LON DME 2.0 TURN RIGHT HDG 220 - CLIMB 6000 FT SQUAWK @";
+		url += "@ VIA CPT AFTER DEP CLIMB STRAIGHT AHEAD - AT LON DME 2.0 TURN RIGHT HDG @220@ - CLIMB @6000FT";
 
-		url += DatalinkToSend.squawk;
-		url += "@ NEXT FREQ @";
-		if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
-		{url += DatalinkToSend.freq;}
-		else 
-		{url += myfrequency;}
-		if (DatalinkToSend.ctot != "no" && DatalinkToSend.ctot.size() > 3)
-		{
-			url += "@ CTOT @";
-			url += DatalinkToSend.ctot;
-			url += "@ ";
-		}else{
-			url += "@ NO CTOT";
-		}
-	
 	}
 	else // normal PDC message (UK Format)
 	{
@@ -237,22 +224,19 @@ if (DatalinkToSend.sid == "CHK" && DatalinkToSend.rwy == "09R") // CPT 09R
 		url += DatalinkToSend.rwy;
 		url += "@ VIA @";
 		url += DatalinkToSend.sid;
-		url += "@ SQUAWK @";
-		url += DatalinkToSend.squawk;
-		url += "@ NEXT FREQ @";
-		if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
-		{url += DatalinkToSend.freq;}
-		else 
-		{url += myfrequency;}
-		if (DatalinkToSend.ctot != "no" && DatalinkToSend.ctot.size() > 3)
-		{
-			url += "CTOT @";
-			url += DatalinkToSend.ctot;
-			url += "@ ";
-		}else{
-			url += "NO CTOT";
-		}
+		url += "@ INIT CLB @";
+		url += DatalinkToSend.climb;
 	}
+	url += "@ SQUAWK @";
+	url += DatalinkToSend.squawk;
+	url += "@ NEXT FREQ @";
+	if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
+	{url += DatalinkToSend.freq;}
+	else 
+	{url += myfrequency;}
+
+	url += "@ ";
+
 	if (DatalinkToSend.message != "no" && DatalinkToSend.message.size() > 1)
 		url += DatalinkToSend.message;
 
