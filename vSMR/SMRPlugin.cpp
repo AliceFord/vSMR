@@ -163,7 +163,7 @@ void pollMessages(void * arg) {
 				if (message.message.find("LOGON") != std::string::npos) {
 					tmessage = "UNABLE";
 					ttype = "CPDLC";
-					tdest = DatalinkToSend.callsign;
+					tdest = message.from;
 					_beginthread(sendDatalinkMessage, 0, NULL);
 				} else {
 					if (PlaySoundClr) {
