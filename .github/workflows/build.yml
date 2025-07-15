@@ -31,6 +31,12 @@ jobs:
         run: |
             .\vcpkg\vcpkg.exe integrate install
 
+      - name: Update Plugin Version
+        if: github.ref_type == 'tag'
+        run: |
+          $tag = $env:GITHUB_REF -replace 'refs/tags/', ''
+          (Get-Content -Path "vSMR\SMRPlugin.hpp") -replace '#define MY_PLUGIN_VERSION.*', "#define MY_PLUGIN_VERSION   \"$tag\"" | Set-Content -Path "vSMR\SMRPlugin.hpp"
+
       - name: Build DLL
         run: msbuild vSMR.sln /p:Configuration=Release /p:Platform='Win32' /p:VcpkgTriplet=x86-windows-static /m
 
