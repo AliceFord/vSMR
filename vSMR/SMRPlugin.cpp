@@ -51,7 +51,9 @@ string tmessage;
 string tdest;
 string ttype;
 
-int messageId = 0;
+int pdc_messageId = 0;
+
+int cpdlc_messageId = 0;
 
 clock_t timer;
 
@@ -161,7 +163,10 @@ void pollMessages(void * arg) {
 		if (message.type.find("telex") != std::string::npos || message.type.find("cpdlc") != std::string::npos) {
 			if (message.message.find("REQ") != std::string::npos || message.message.find("CLR") != std::string::npos || message.message.find("PDC") != std::string::npos || message.message.find("PREDEP") != std::string::npos || message.message.find("REQUEST") != std::string::npos) {
 				if (message.message.find("LOGON") != std::string::npos) {
-					tmessage = "UNABLE";
+					tmessage = "/data2/";
+					cpdlc_messageId ++;
+					tmessage += std::to_string(cpdlc_messageId);
+					tmessage += "//NE/UNABLE";
 					ttype = "CPDLC";
 					tdest = message.from;
 					_beginthread(sendDatalinkMessage, 0, NULL);
@@ -200,8 +205,8 @@ void sendDatalinkClearance(void * arg) {
 	url += "&to=";
 	url += DatalinkToSend.callsign;
 	url += "&type=CPDLC&packet=/data2/";
-	messageId++;
-	url += std::to_string(messageId);
+	pdc_messageId++;
+	url += std::to_string(pdc_messageId);
 	url += "//R/";
 if (DatalinkToSend.sid == "CHK" && DatalinkToSend.rwy == "09R") // CPT 09R
 	{
@@ -275,7 +280,7 @@ CSMRPlugin::CSMRPlugin(void) :CPlugIn(EuroScopePlugIn::COMPATIBILITY_CODE, MY_PL
 	RegisterTagItemType("Datalink clearance", TAG_ITEM_DATALINK_STS);
 	RegisterTagItemFunction("Datalink menu", TAG_FUNC_DATALINK_MENU);
 
-	messageId = rand() % 10000 + 1789;
+	pdc_messageId = rand() % 10000 + 1789;
 
 	timer = clock();
 
