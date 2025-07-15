@@ -74,7 +74,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\vSMR.def</ModuleDefinitionFile>
-      <AdditionalDependencies>..\lib\EuroScopePlugInDll.lib;..\lib\libcurld.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\EuroScopePlugInDll.lib;</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalLibraryDirectories>C:\Users\olive\OneDrive\Documents\GitHub\vSMR\lib\include\asio;C:\Users\olive\OneDrive\Documents\GitHub\vSMR\lib\include\curl;C:\Users\olive\OneDrive\Documents\GitHub\vSMR\lib\include\rapidjson;C:\Users\olive\OneDrive\Documents\GitHub\vSMR\lib\include\boost_1_85_0\boost;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
@@ -109,7 +109,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\vSMR.def</ModuleDefinitionFile>
-      <AdditionalDependencies>..\lib\EuroScopePlugInDll.lib;..\lib\libcurld.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\EuroScopePlugInDll.lib;winmm.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/IGNORE:4099 /NODEFAULTLIB:LIBCMTD %(AdditionalOptions)</AdditionalOptions>

@@ -119,6 +119,7 @@ CSMRRadar::CSMRRadar()
 	appWindows[2] = new CInsetWindow(APPWINDOW_TWO);
 
 	Logger::info("Loading WIP areas");
+	Logger::info(curl_version());
 	string raw;
 	string url = "https://raw.githubusercontent.com/VATSIM-UK/uk-controller-pack/refs/heads/main/.data/vSMR_WIP_areas.txt";
 	HttpHelper* httpHelper = new HttpHelper();
@@ -128,6 +129,7 @@ CSMRRadar::CSMRRadar()
 	string line;
 	vector<CPosition> wipArea;
 	while (getline(ss, line, '\n')) {
+		Logger::info(line);
 		if (startsWith("COORD:", line.c_str())) {
 			CPosition pos;
 			pos.LoadFromStrings(line.substr(21, 14).c_str(), line.substr(6, 14).c_str());
