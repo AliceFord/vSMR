@@ -21,7 +21,9 @@ jobs:
       - name: Bootstrap vcpkg
         run: |
             git clone https://github.com/microsoft/vcpkg.git
-            .\vcpkg\bootstrap-vcpkg.bat
+            cd vcpkg
+            git checkout bdd229e13c66fa11acdc0bc8fed8e7474cd24aa5
+            .\bootstrap-vcpkg.bat
 
       - name: Install libcurl
         run: |
