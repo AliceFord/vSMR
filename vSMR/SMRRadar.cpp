@@ -280,6 +280,9 @@ void CSMRRadar::OnAsrContentLoaded(bool Loaded)
 	if ((p_value = GetDataFromAsr("PredictedLine")) != NULL)
 		PredictedLength = atoi(p_value);
 
+	if ((p_value = GetDataFromAsr("WIPareas")) != NULL)
+		wipAreasActive = atoi(p_value);
+
 	string temp;
 
 	for (int i = 1; i < 3; i++)
@@ -356,6 +359,8 @@ void CSMRRadar::OnAsrContentToBeSaved()
 	SaveDataToAsr("GndTrailsDots", "vSMR GRND Trail Dots", std::to_string(Trail_Gnd).c_str());
 
 	SaveDataToAsr("PredictedLine", "vSMR Predicted Track Lines", std::to_string(PredictedLength).c_str());
+
+	SaveDataToAsr("WIPareas", "vSMR WIP Areas", std::to_string(wipAreasActive).c_str());
 
 	string temp = "";
 
@@ -921,6 +926,7 @@ void CSMRRadar::OnFunctionCall(int FunctionId, const char * sItemString, POINT P
 
 	if (FunctionId == WIP_AREAS) {
 		wipAreasActive = !wipAreasActive;
+		SaveDataToAsr("WIPareas", "vSMR WIP Areas", std::to_string(wipAreasActive).c_str());
 	}
 
 	if (FunctionId == RIMCAS_ACTIVE_AIRPORT_FUNC) {
@@ -1915,7 +1921,7 @@ void CSMRRadar::OnRefresh(HDC hDC, int Phase)
 
 	RimcasInstance->OnRefreshBegin(isLVP);
 
-	Logger::info("WIP Areas");
+	Logger::info("Drawing WIP Areas");
 
 	if (wipAreasActive) {
 		CPen RedPen(PS_SOLID, 2, RGB(150, 0, 0));
