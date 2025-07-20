@@ -245,7 +245,7 @@ void sendDatalinkClearance(void *arg)
 	messageId++;
 	url += std::to_string(messageId);
 	url += "//R/";
-	if (DatalinkToSend.sid == "CHK" && DatalinkToSend.rwy == "09R") // CPT 09R
+if (DatalinkToSend.sid == "CHK" && DatalinkToSend.rwy == "09R") // CPT 09R
 	{
 		url += "@";
 		url += DatalinkToSend.callsign;

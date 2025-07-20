@@ -403,6 +403,9 @@ void CSMRRadar::OnMoveScreenObject(int ObjectType, const char * sObjectId, POINT
 
 		bool toggleCursor = appWindows[appWindowId]->OnMoveScreenObject(sObjectId, Pt, Area, Released);
 
+		if (Released)
+			OnAsrContentToBeSaved();
+
 		if (!toggleCursor)
 		{
 			if (standardCursor)
@@ -561,8 +564,10 @@ void CSMRRadar::OnClickScreenObject(int ObjectType, const char * sObjectId, POIN
 	if (ObjectType == APPWINDOW_ONE || ObjectType == APPWINDOW_TWO) {
 		int appWindowId = ObjectType - APPWINDOW_BASE;
 
-		if (strcmp(sObjectId, "close") == 0)
+		if (strcmp(sObjectId, "close") == 0) {
 			appWindowDisplays[appWindowId] = false;
+			OnAsrContentToBeSaved();
+		}
 		if (strcmp(sObjectId, "range") == 0) {
 			GetPlugIn()->OpenPopupList(Area, "SRW Zoom", 1);
 			GetPlugIn()->AddPopupListElement("55", "", RIMCAS_UPDATERANGE + appWindowId, false, int(appWindows[appWindowId]->m_Scale == 55));
@@ -909,6 +914,7 @@ void CSMRRadar::OnFunctionCall(int FunctionId, const char * sItemString, POINT P
 	if (FunctionId == APPWINDOW_ONE || FunctionId == APPWINDOW_TWO) {
 		int id = FunctionId - APPWINDOW_BASE;
 		appWindowDisplays[id] = !appWindowDisplays[id];
+		OnAsrContentToBeSaved();
 	}
 
 	if (FunctionId == WIP_AREAS) {
@@ -933,6 +939,8 @@ void CSMRRadar::OnFunctionCall(int FunctionId, const char * sItemString, POINT P
 			currentFontSize = 5;
 
 		ShowLists["Label Font Size"] = true;
+
+		OnAsrContentToBeSaved();
 	}
 
 	if (FunctionId == RIMCAS_QDM_TOGGLE) {
@@ -963,16 +971,22 @@ void CSMRRadar::OnFunctionCall(int FunctionId, const char * sItemString, POINT P
 		if (startsWith("UNL", sItemString))
 			sItemString = "66000";
 		appWindows[id]->m_Filter = atoi(sItemString);
+
+		OnAsrContentToBeSaved();
 	}
 
 	if (FunctionId == RIMCAS_UPDATERANGE1 || FunctionId == RIMCAS_UPDATERANGE2) {
 		int id = FunctionId - RIMCAS_UPDATERANGE;
 		appWindows[id]->m_Scale = atoi(sItemString);
+
+		OnAsrContentToBeSaved();
 	}
 
 	if (FunctionId == RIMCAS_UPDATEROTATE1 || FunctionId == RIMCAS_UPDATEROTATE2) {
 		int id = FunctionId - RIMCAS_UPDATEROTATE;
 		appWindows[id]->m_Rotation = atoi(sItemString);
+
+		OnAsrContentToBeSaved();
 	}
 
 	if (FunctionId == RIMCAS_UPDATE_BRIGHNESS) {
@@ -1032,11 +1046,13 @@ void CSMRRadar::OnFunctionCall(int FunctionId, const char * sItemString, POINT P
 	if (FunctionId == RIMCAS_UPDATE_AFTERGLOW)
 	{
 		Afterglow = !Afterglow;
+		OnAsrContentToBeSaved();
 	}
 
 	if (FunctionId == RIMCAS_UPDATE_GND_TRAIL)
 	{
 		Trail_Gnd = atoi(sItemString);
+		OnAsrContentToBeSaved();
 
 		ShowLists["GRND Trail Dots"] = true;
 	}
@@ -1044,6 +1060,7 @@ void CSMRRadar::OnFunctionCall(int FunctionId, const char * sItemString, POINT P
 	if (FunctionId == RIMCAS_UPDATE_APP_TRAIL)
 	{
 		Trail_App = atoi(sItemString);
+		OnAsrContentToBeSaved();
 
 		ShowLists["APPR Trail Dots"] = true;
 	}
@@ -1051,6 +1068,7 @@ void CSMRRadar::OnFunctionCall(int FunctionId, const char * sItemString, POINT P
 	if (FunctionId == RIMCAS_UPDATE_PTL)
 	{
 		PredictedLength = atoi(sItemString);
+		OnAsrContentToBeSaved();
 
 		ShowLists["Predicted Track Line"] = true;
 	}
