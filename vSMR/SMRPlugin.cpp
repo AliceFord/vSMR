@@ -17,7 +17,7 @@ bool BLINK = false;
 
 bool PlaySoundClr = false;
 
-bool AutoConnect = false;
+// bool AutoConnect = false;
 bool isConnecting = false;
 
 struct DatalinkPacket
@@ -338,8 +338,8 @@ CSMRPlugin::CSMRPlugin(void) : CPlugIn(EuroScopePlugIn::COMPATIBILITY_CODE, MY_P
 		logonCode = p_value;
 	if ((p_value = GetDataFromSettings("cpdlc_sound")) != NULL)
 		PlaySoundClr = bool(!!atoi(p_value));
-	if ((p_value = GetDataFromSettings("cpdlc_autoconnect")) != NULL)
-		AutoConnect = bool(!!atoi(p_value));
+	/* if ((p_value = GetDataFromSettings("cpdlc_autoconnect")) != NULL)
+		AutoConnect = bool(!!atoi(p_value)); */
 
 	char DllPathFile[_MAX_PATH];
 	string DllPath;
@@ -359,7 +359,7 @@ CSMRPlugin::~CSMRPlugin()
 	if (PlaySoundClr)
 		temp = 1;
 	SaveDataToSettings("cpdlc_sound", "Play sound on clearance request", std::to_string(temp).c_str());
-	SaveDataToSettings("cpdlc_autoconnect", "Automatically connect to Hoppie server on startup", std::to_string(AutoConnect).c_str());
+	// SaveDataToSettings("cpdlc_autoconnect", "Automatically connect to Hoppie server on startup", std::to_string(AutoConnect).c_str());
 
 	try
 	{
@@ -388,7 +388,8 @@ bool CSMRPlugin::OnCompileCommand(const char *sCommandLine)
 				{
 					DisplayUserMessage("CPDLC", "Server", "Waiting for next retry time!", true, true, false, true, false);
 				}
-				else {
+				else
+				{
 					_beginthread(datalinkLogin, 0, NULL);
 				}
 			}
@@ -424,7 +425,7 @@ bool CSMRPlugin::OnCompileCommand(const char *sCommandLine)
 		dia.m_Logon = logonCallsign.c_str();
 		dia.m_Password = logonCode.c_str();
 		dia.m_Sound = int(PlaySoundClr);
-		dia.m_AutoLogon = int(AutoConnect);
+		// dia.m_AutoLogon = int(AutoConnect);
 
 		if (dia.DoModal() != IDOK)
 			return true;
@@ -439,7 +440,7 @@ bool CSMRPlugin::OnCompileCommand(const char *sCommandLine)
 		if (PlaySoundClr)
 			temp = 1;
 		SaveDataToSettings("cpdlc_sound", "Play sound on clearance request", std::to_string(temp).c_str());
-		SaveDataToSettings("cpdlc_autoconnect", "Automatically connect to Hoppie server on startup", std::to_string(AutoConnect).c_str());
+		// SaveDataToSettings("cpdlc_autoconnect", "Automatically connect to Hoppie server on startup", std::to_string(AutoConnect).c_str());
 
 		return true;
 	}
@@ -713,7 +714,6 @@ void CSMRPlugin::OnTimer(int Counter)
 	Logger::info(string(__FUNCSIG__));
 	BLINK = !BLINK;
 
-
 	if (HoppieConnected && ConnectionMessage)
 	{
 		DisplayUserMessage("CPDLC", "Server", "Logged in!", true, true, false, true, false);
@@ -733,7 +733,8 @@ void CSMRPlugin::OnTimer(int Counter)
 	}
 
 	// Check if logonCode is empty or only whitespace
-	if (ControllerMyself().IsController() && logonCode.empty() || std::all_of(logonCode.begin(), logonCode.end(), isspace)) {
+	if (ControllerMyself().IsController() && logonCode.empty() || std::all_of(logonCode.begin(), logonCode.end(), isspace))
+	{
 		DisplayUserMessage("CPDLC", "Error", "Logon code is empty. Please set your CPDLC password in the settings.", true, true, false, true, false);
 		isConnecting = false;
 		return;
@@ -750,30 +751,31 @@ void CSMRPlugin::OnTimer(int Counter)
 	{
 		DisplayUserMessage("CPDLC", "Error", "Maximum login retries reached. Please check your settings.", true, true, false, true, false);
 		HoppieConnected = false;
-		loginRetryCount = 0; // Reset after giving up
+		loginRetryCount = 0;	// Reset after giving up
 		nextLoginRetryTime = 0; // Reset next retry time
 		isConnecting = false;
 		return;
 	}
+	else
 	{
 		DisplayUserMessage("CPDLC", "Error", "You are not logged in as a controller!", true, true, false, true, false);
 	}
-	
-	//Auto connection
-	if (ControllerMyself().IsController() && AutoConnect && !HoppieConnected && !isConnecting)
-	{
-		if (loginRetryCount > 0 && nextLoginRetryTime > 0 && time(NULL) < nextLoginRetryTime)
+
+	// Auto connection
+	/* 	if (ControllerMyself().IsController() && AutoConnect && !HoppieConnected && !isConnecting)
 		{
-			return; // Wait for the next retry time
+			if (loginRetryCount > 0 && nextLoginRetryTime > 0 && time(NULL) < nextLoginRetryTime)
+			{
+				return; // Wait for the next retry time
+			}
+			else {
+				isConnecting = true;
+				_beginthread(datalinkLogin, 0, NULL);
+			}
 		}
 		else {
-			isConnecting = true;
-			_beginthread(datalinkLogin, 0, NULL);
-		}
-	}
-	else {
-		DisplayUserMessage("CPDLC", "Error", "You are not logged in as a controller!", true, true, false, true, false);
-	}
+			DisplayUserMessage("CPDLC", "Error", "You are not logged in as a controller!", true, true, false, true, false);
+		} */
 
 	if (((clock() - timer) / CLOCKS_PER_SEC) > 10 && HoppieConnected)
 	{
