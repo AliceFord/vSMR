@@ -245,42 +245,43 @@ void sendDatalinkClearance(void *arg)
 	messageId++;
 	url += std::to_string(messageId);
 	url += "//R/";
-	url += "CLR TO @";
-	url += DatalinkToSend.destination;
-	url += "@ RWY @";
-	url += DatalinkToSend.rwy;
-	url += "@ DEP @";
-	url += DatalinkToSend.sid;
-	url += "@ INIT CLB @";
-	url += DatalinkToSend.climb;
-	url += "@ SQUAWK @";
-	url += DatalinkToSend.squawk;
-	url += "@ ";
-	if (DatalinkToSend.ctot != "no" && DatalinkToSend.ctot.size() > 3)
+	if (DatalinkToSend.sid == "CHK" && DatalinkToSend.rwy == "09R") // CPT 09R
 	{
-		url += "CTOT @";
-		url += DatalinkToSend.ctot;
-		url += "@ ";
-	}
-	if (DatalinkToSend.asat != "no" && DatalinkToSend.asat.size() > 3)
-	{
-		url += "TSAT @";
-		url += DatalinkToSend.asat;
-		url += "@ ";
-	}
-	if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
-	{
-		url += "WHEN RDY CALL FREQ @";
-		url += DatalinkToSend.freq;
 		url += "@";
+		url += DatalinkToSend.callsign;
+		url += "@ CLRD TO @";
+		url += DatalinkToSend.destination;
+		url += "@ OFF RWY @";
+		url += DatalinkToSend.rwy;
+		url += "@ VIA CPT AFTER DEP CLIMB STRAIGHT AHEAD - AT LON DME 2.0 TURN RIGHT HDG @220@ - CLIMB @6000FT";
 	}
 	else
 	{
-		url += "WHEN RDY CALL @";
-		url += myfrequency;
 		url += "@";
+		url += DatalinkToSend.callsign;
+		url += "@ CLRD TO @";
+		url += DatalinkToSend.destination;
+		url += "@ OFF @";
+		url += DatalinkToSend.rwy;
+		url += "@ VIA @";
+		url += DatalinkToSend.sid;
+		url += "@ INIT CLB @";
+		url += DatalinkToSend.climb;
 	}
-	url += " IF UNABLE CALL VOICE ";
+	url += "@ SQUAWK @";
+	url += DatalinkToSend.squawk;
+	url += "@ NEXT FREQ @";
+	if (DatalinkToSend.freq != "no" && DatalinkToSend.freq.size() > 5)
+	{
+		url += DatalinkToSend.freq;
+	}
+	else
+	{
+		url += myfrequency;
+	}
+
+	url += "@ ";
+
 	if (DatalinkToSend.message != "no" && DatalinkToSend.message.size() > 1)
 		url += DatalinkToSend.message;
 
