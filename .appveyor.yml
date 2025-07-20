@@ -9,17 +9,7 @@
 #---------------------------------#
 
 # version format
-version: 1.5.{build}
-
-# branches to build
-branches:
-  # whitelist
-  only:
-    - master
-
-  # blacklist
-  except:
-    - gh-pages
+version: 1.6.{build}
 
 # Maximum number of concurrent jobs for the project
 max_jobs: 1
@@ -29,7 +19,7 @@ max_jobs: 1
 #---------------------------------#
 
 # Build worker image (VM template)
-os: Visual Studio 2019
+os: Visual Studio 2022
 
 #---------------------------------#
 #       build configuration       #
@@ -59,3 +49,5 @@ after_build:
 
 artifacts:
   - path: vSMR-nightly.zip
+
+
