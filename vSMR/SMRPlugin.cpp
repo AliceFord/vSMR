@@ -66,6 +66,16 @@ char recv_buf[1024];
 
 vector<CSMRRadar*> RadarScreensOpened;
 
+void createPlainCpdlcMessage(const char *message, const char *responses) {
+	ttype = "CPDLC";
+	tmessage = "/data2/";
+	tmessage += std::to_string(++messageId);
+	tmessage += "//";
+	tmessage += responses;
+	tmessage += "/";
+	tmessage += message;
+}
+
 void datalinkLogin(void * arg) {
 	string raw;
 	string url = baseUrlDatalink;
@@ -109,12 +119,9 @@ void sendDatalinkMessage(void * arg) {
 	raw.assign(httpHelper->downloadStringFromURL(url));
 
 	if (startsWith("ok", raw.c_str())) {
-		if (PendingMessages.find(DatalinkToSend.callsign) != PendingMessages.end())
-			PendingMessages.erase(DatalinkToSend.callsign);
-		if (std::find(AircraftMessage.begin(), AircraftMessage.end(), DatalinkToSend.callsign.c_str()) != AircraftMessage.end()) {
-			AircraftMessage.erase(std::remove(AircraftMessage.begin(), AircraftMessage.end(), DatalinkToSend.callsign.c_str()), AircraftMessage.end());
+		if (std::find(AircraftMessage.begin(), AircraftMessage.end(), tdest.c_str()) != AircraftMessage.end()) {
+			AircraftMessage.erase(std::remove(AircraftMessage.begin(), AircraftMessage.end(), tdest.c_str()), AircraftMessage.end());
 		}
-		AircraftMessageSent.push_back(DatalinkToSend.callsign.c_str());
 	}
 };
 
@@ -161,9 +168,8 @@ void pollMessages(void * arg) {
 		if (message.type.find("telex") != std::string::npos || message.type.find("cpdlc") != std::string::npos) {
 			if (message.message.find("REQ") != std::string::npos || message.message.find("CLR") != std::string::npos || message.message.find("PDC") != std::string::npos || message.message.find("PREDEP") != std::string::npos || message.message.find("REQUEST") != std::string::npos) {
 				if (message.message.find("LOGON") != std::string::npos) {
-					tmessage = "UNABLE";
-					ttype = "CPDLC";
-					tdest = DatalinkToSend.callsign;
+					createPlainCpdlcMessage("UNABLE", "NE");
+					tdest = message.from;
 					_beginthread(sendDatalinkMessage, 0, NULL);
 				} else {
 					if (PlaySoundClr) {
@@ -472,8 +478,7 @@ void CSMRPlugin::OnFunctionCall(int FunctionId, const char * sItemString, POINT 
 
 		if (FlightPlan.IsValid()) {
 			AircraftStandby.push_back(FlightPlan.GetCallsign());
-			tmessage = "STANDBY";
-			ttype = "CPDLC";
+			createPlainCpdlcMessage("STANDBY", "NE");
 			tdest = FlightPlan.GetCallsign();
 			_beginthread(sendDatalinkMessage, 0, NULL);
 		}
@@ -510,17 +515,17 @@ void CSMRPlugin::OnFunctionCall(int FunctionId, const char * sItemString, POINT 
 		CFlightPlan FlightPlan = FlightPlanSelectASEL();
 
 		if (FlightPlan.IsValid()) {
-			tmessage = "UNABLE CALL ON FREQ";
-			ttype = "CPDLC";
+			createPlainCpdlcMessage("UNABLE - CALL ON FREQ", "R");
 			tdest = FlightPlan.GetCallsign();
 
-			if (std::find(AircraftDemandingClearance.begin(), AircraftDemandingClearance.end(), DatalinkToSend.callsign.c_str()) != AircraftDemandingClearance.end()) {
+			if (std::find(AircraftDemandingClearance.begin(), AircraftDemandingClearance.end(), FlightPlan.GetCallsign()) != AircraftDemandingClearance.end()) {
 				AircraftDemandingClearance.erase(std::remove(AircraftDemandingClearance.begin(), AircraftDemandingClearance.end(), FlightPlan.GetCallsign()), AircraftDemandingClearance.end());
 			}
-			if (std::find(AircraftStandby.begin(), AircraftStandby.end(), DatalinkToSend.callsign.c_str()) != AircraftStandby.end()) {
+			if (std::find(AircraftStandby.begin(), AircraftStandby.end(), FlightPlan.GetCallsign()) != AircraftStandby.end()) {
 				AircraftStandby.erase(std::remove(AircraftStandby.begin(), AircraftStandby.end(), FlightPlan.GetCallsign()), AircraftDemandingClearance.end());
 			}
-			PendingMessages.erase(DatalinkToSend.callsign);
+			PendingMessages.erase(FlightPlan.GetCallsign());
+			AircraftMessageSent.push_back(FlightPlan.GetCallsign());
 
 			_beginthread(sendDatalinkMessage, 0, NULL);
 		}
