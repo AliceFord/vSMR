@@ -198,6 +198,7 @@ FakesAssemblies/
 #cmake
 CMakeFiles/
 CMake/
+CMakeUserPresets.json
 
 #Custom
 
