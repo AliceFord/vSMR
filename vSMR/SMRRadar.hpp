@@ -46,7 +46,7 @@ class CSMRRadar :
 	public EuroScopePlugIn::CRadarScreen
 {
 public:
-	CSMRRadar();
+	CSMRRadar(CPlugIn *plugin);
 	virtual ~CSMRRadar();
 
 	static map<string, string> vStripsStands;
