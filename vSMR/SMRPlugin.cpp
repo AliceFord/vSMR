@@ -655,7 +655,7 @@ CRadarScreen * CSMRPlugin::OnRadarScreenCreated(const char * sDisplayName, bool 
 {
 	Logger::info(string(__FUNCSIG__));
 	if (!strcmp(sDisplayName, MY_PLUGIN_VIEW_AVISO)) {
-		CSMRRadar* rd = new CSMRRadar();
+		CSMRRadar* rd = new CSMRRadar(this);
 		RadarScreensOpened.push_back(rd);
 		return rd;
 	}
