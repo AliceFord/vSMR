@@ -66,6 +66,18 @@ char recv_buf[1024];
 
 vector<CSMRRadar*> RadarScreensOpened;
 
+static void formatNowTimeDate(string & timeStr, string &dateStr)
+{
+	time_t now = time(NULL);
+	tm tmnow;
+	gmtime_s(&tmnow, &now); // use UTC
+	char buf[64];
+	strftime(buf, sizeof(buf), "%H%MZ", &tmnow);
+	timeStr = buf;
+	strftime(buf, sizeof(buf), "%d%m%y", &tmnow);
+	dateStr = buf;
+}
+
 void createPlainCpdlcMessage(const char *message, const char *responses) {
 	ttype = "CPDLC";
 	tmessage = "/data2/";
@@ -177,11 +189,28 @@ void pollMessages(void * arg) {
 						PlaySound(MAKEINTRESOURCE(IDR_WAVE1), AfxGetInstanceHandle(), SND_RESOURCE | SND_ASYNC);
 					}
 					AircraftDemandingClearance.push_back(message.from);
+					string timeS, dateS;
+					formatNowTimeDate(timeS, dateS);
+					// Send ack 
+					string reqAck = "DEPART MESSAGE REQUEST RECEIVED ";
+					reqAck += timeS + " " + dateS;
+					reqAck += " REQUEST BEING PROCESSED";
+					createPlainCpdlcMessage(reqAck.c_str(), "NE");
+					tdest = message.from;
+					_beginthread(sendDatalinkMessage, 0, NULL);
 				}
 			}
 			else if (message.message.find("WILCO") != std::string::npos || message.message.find("ROGER") != std::string::npos || message.message.find("RGR") != std::string::npos || message.message.find("ACCEPT") != std::string::npos) {
 				if (std::find(AircraftMessageSent.begin(), AircraftMessageSent.end(), message.from) != AircraftMessageSent.end()) {
 					AircraftWilco.push_back(message.from);
+					string timeS, dateS;
+					formatNowTimeDate(timeS, dateS);
+					// send ack
+					string clearanceAck = "DEPART MESSAGE ACK RECEIVED ";
+					clearanceAck += timeS + " " + dateS;
+					clearanceAck += " CLEARANCE CONFIRMED";
+					createPlainCpdlcMessage(clearanceAck.c_str(), "NE");
+					_beginthread(sendDatalinkMessage, 0, NULL);
 				}
 			}
 			else if (message.message.length() != 0 ){
